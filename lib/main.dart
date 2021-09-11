@@ -26,10 +26,10 @@ class MyApp extends StatelessWidget {
       title: 'Password Manager',
       theme: ThemeData(
           primarySwatch: Pallete.pallet1, accentColor: Pallete.pallet1),
-      // home: BioLock(
-      //   authAPI: auth,
-      // ),
-      home: Home(title: 'Password Manager'),
+      home: BioLock(
+        authAPI: auth,
+      ),
+      //home: Home(title: 'Password Manager'),
     );
   }
 }

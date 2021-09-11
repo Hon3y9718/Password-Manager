@@ -13,20 +13,27 @@ Widget buildPasswordTile(
   return Card(
     child: ExpansionTile(
         title: Text(passwordsModel.UserName),
-        trailing: IconButton(
-            splashRadius: 10,
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: passwordsModel.Password))
-                  .then((_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Copied!'),
-                    duration: Duration(milliseconds: 500),
-                  ),
-                );
-              });
-            },
-            icon: FaIcon(FontAwesomeIcons.copy)),
+        trailing: GestureDetector(
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: '${passwordsModel.Password}'))
+                .then(
+                    (_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Password Copied'),
+                          duration: Duration(milliseconds: 500),
+                        )));
+          },
+          onLongPress: () {
+            Clipboard.setData(ClipboardData(
+                    text:
+                        '${passwordsModel.UserName} : ${passwordsModel.Password}'))
+                .then(
+                    (_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Username and Password Copied'),
+                          duration: Duration(milliseconds: 500),
+                        )));
+          },
+          child: FaIcon(FontAwesomeIcons.copy),
+        ),
         leading: FaIcon(FontAwesomeIcons.google),
         subtitle: Text(passwordsModel.Password),
         children: [
@@ -43,6 +50,13 @@ Widget buildPasswordTile(
                   child: IconButton(
                     onPressed: () {},
                     icon: FaIcon(FontAwesomeIcons.eyeSlash),
+                    color: Colors.grey,
+                  ),
+                ),
+                Expanded(
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: FaIcon(FontAwesomeIcons.externalLinkAlt),
                     color: Colors.grey,
                   ),
                 ),
@@ -103,11 +117,6 @@ Widget buildContent(List<PasswordsModel> passwords, DatabaseFunc db) {
                         'Alone',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 50, fontFamily: 'Glory'),
-                      ),
-                      Text(
-                        '🙁',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 25),
                       ),
                     ],
                   ),

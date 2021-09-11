@@ -158,13 +158,15 @@ class _HomeState extends State<Home> {
       //backgroundColor: Color(0xffebf7ba),
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(fontFamily: 'Glory', fontWeight: FontWeight.bold),
+        ),
       ),
       body: ValueListenableBuilder<Box<PasswordsModel>>(
         valueListenable: Boxes.getPasswords().listenable(),
         builder: (context, box, _) {
           final password = box.values.toList().cast<PasswordsModel>();
-
           return buildContent(password, db);
         },
       ),
