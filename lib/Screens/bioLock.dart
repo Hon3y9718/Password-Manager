@@ -22,8 +22,8 @@ class _BioLockState extends State<BioLock> {
   AuthenticateFingerprint() async {
     isAuthenticated = await widget.authAPI.authenticate();
     if (isAuthenticated) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => Home(title: 'Welcome')));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
       return;
     }
     popUpNoAuthSet(context);
@@ -140,9 +140,7 @@ class _BioLockState extends State<BioLock> {
               onPressed: () {
                 if (securtiyKey.text == key) {
                   Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Home(title: "Welcome")));
+                      context, MaterialPageRoute(builder: (context) => Home()));
                   return;
                 }
                 popUpSecutiryKeyNotMatch(context);

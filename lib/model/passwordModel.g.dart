@@ -22,13 +22,14 @@ class PasswordsModelAdapter extends TypeAdapter<PasswordsModel> {
       fields[3] as String,
       fields[1] as DateTime,
       fields[2] as bool,
+      fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, PasswordsModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.ClientName)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class PasswordsModelAdapter extends TypeAdapter<PasswordsModel> {
       ..writeByte(3)
       ..write(obj.UserName)
       ..writeByte(4)
-      ..write(obj.Password);
+      ..write(obj.Password)
+      ..writeByte(5)
+      ..write(obj.firestoreDocID);
   }
 
   @override

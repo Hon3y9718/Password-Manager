@@ -3,19 +3,37 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:passmanager/Screens/EditPassword.dart';
 import 'package:passmanager/api/DatabaseFunc.dart';
+import 'package:passmanager/colorPalletes/pallet.dart';
 import 'package:passmanager/model/passwordModel.dart';
 
 Widget buildPasswordTile(
-    BuildContext context, PasswordsModel passwordsModel, db) {
+    BuildContext context, PasswordsModel passwordsModel, DatabaseFunc db) {
   final data = DateFormat.yMMMd().format(passwordsModel.createdDate);
 
   return Card(
     child: ExpansionTile(
-        title: Text(passwordsModel.UserName),
+        subtitle:
+            Text(passwordsModel.UserName, overflow: TextOverflow.ellipsis),
+        title: Row(
+          children: [
+            Text(passwordsModel.ClientName, overflow: TextOverflow.ellipsis),
+            SizedBox(
+              width: 5,
+            ),
+            passwordsModel.isUpdated
+                ? FaIcon(
+                    FontAwesomeIcons.solidCheckCircle,
+                    color: Colors.blueGrey,
+                    size: 15,
+                  )
+                : Container()
+          ],
+        ),
         trailing: GestureDetector(
           onTap: () {
-            Clipboard.setData(ClipboardData(text: '${passwordsModel.Password}'))
+            Clipboard.setData(ClipboardData(text: '${passwordsModel.UserName}'))
                 .then(
                     (_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('Password Copied'),
@@ -34,28 +52,80 @@ Widget buildPasswordTile(
           },
           child: FaIcon(FontAwesomeIcons.copy),
         ),
-        leading: FaIcon(FontAwesomeIcons.google),
-        subtitle: Text(passwordsModel.Password),
+        leading: FaIcon(
+          FontAwesomeIcons.userAlt,
+          color: Colors.blueGrey,
+        ),
         children: [
+          Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  leading: FaIcon(
+                    FontAwesomeIcons.userSecret,
+                    size: 22,
+                  ),
+                  title: Text(
+                    '${passwordsModel.UserName}',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () {
+                    Clipboard.setData(
+                            ClipboardData(text: '${passwordsModel.UserName}'))
+                        .then((_) =>
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Username Copied'),
+                              duration: Duration(milliseconds: 500),
+                            )));
+                  },
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  leading: FaIcon(
+                    FontAwesomeIcons.lock,
+                    size: 20,
+                  ),
+                  title: Text('${passwordsModel.Password}'),
+                  onTap: () {
+                    Clipboard.setData(
+                            ClipboardData(text: '${passwordsModel.UserName}'))
+                        .then((_) =>
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Password Copied'),
+                              duration: Duration(milliseconds: 500),
+                            )));
+                  },
+                ),
+              ),
+            ],
+          ),
           ListTile(
             title: Row(
               children: [
                 Expanded(
                     child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditPassword(
+                                  passwordModel: passwordsModel,
+                                  db: db,
+                                )));
+                  },
                   icon: FaIcon(FontAwesomeIcons.edit),
                   color: Colors.grey,
                 )),
                 Expanded(
                   child: IconButton(
-                    onPressed: () {},
-                    icon: FaIcon(FontAwesomeIcons.eyeSlash),
-                    color: Colors.grey,
-                  ),
-                ),
-                Expanded(
-                  child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      db.sendPassword(passwordsModel);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Password sent to your PC'),
+                        duration: Duration(milliseconds: 500),
+                      ));
+                    },
                     icon: FaIcon(FontAwesomeIcons.externalLinkAlt),
                     color: Colors.grey,
                   ),
@@ -63,7 +133,7 @@ Widget buildPasswordTile(
                 Expanded(
                     child: IconButton(
                   onPressed: () {
-                    db.deletePassword(passwordsModel);
+                    db.deletePasswordLocal(passwordsModel);
                   },
                   icon: FaIcon(FontAwesomeIcons.trash),
                   color: Colors.grey,
@@ -88,7 +158,11 @@ Widget buildContent(List<PasswordsModel> passwords, DatabaseFunc db) {
                 itemCount: passwords.length,
                 itemBuilder: (BuildContext context, int index) {
                   final password = passwords[index];
-                  return buildPasswordTile(context, password, db);
+                  return buildPasswordTile(
+                    context,
+                    password,
+                    db,
+                  );
                 },
               ),
             )

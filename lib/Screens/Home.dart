@@ -10,9 +10,7 @@ import 'package:passmanager/widgets/widgets.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key, required this.title}) : super(key: key);
-  final String title;
-
+  const Home({Key? key}) : super(key: key);
   @override
   _HomeState createState() => _HomeState();
 }
@@ -130,11 +128,12 @@ class _HomeState extends State<Home> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
-              await db.addPassword(
-                  userName.text, password.text, clientName.text);
               if (_formKey.currentState!.validate()) {
+                PasswordsModel passwordModel = await db.addPasswordRemote(
+                    userName.text, password.text, clientName.text);
+                await db.addPasswordLocal(passwordModel);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Password Added')),
+                  SnackBar(content: Text('Password Added')),
                 );
               }
               password.text = '';
@@ -159,7 +158,7 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          widget.title,
+          'Password Manager',
           style: TextStyle(fontFamily: 'Glory', fontWeight: FontWeight.bold),
         ),
       ),
