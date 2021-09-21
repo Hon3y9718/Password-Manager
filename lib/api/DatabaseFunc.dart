@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:local_auth/error_codes.dart';
 import 'package:passmanager/boxes.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:passmanager/model/passwordModel.dart';
 
 class DatabaseFunc {
