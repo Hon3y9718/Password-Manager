@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:passmanager/Screens/EditPassword.dart';
 import 'package:passmanager/api/DatabaseFunc.dart';
-import 'package:passmanager/colorPalletes/pallet.dart';
 import 'package:passmanager/model/passwordModel.dart';
 
 Widget buildPasswordTile(
@@ -120,7 +119,7 @@ Widget buildPasswordTile(
                 Expanded(
                   child: IconButton(
                     onPressed: () {
-                      db.sendPassword(passwordsModel);
+                      db.sendPassword(passwordsModel.firestoreDocID);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text('Password sent to your PC'),
                         duration: Duration(milliseconds: 500),

@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:passmanager/boxes.dart';
-import 'package:hive/hive.dart';
 import 'package:passmanager/model/passwordModel.dart';
 
 class DatabaseFunc {
   var firestoreDocId = 'null';
+  final user = FirebaseAuth.instance.currentUser!;
 
 //Add New Password
   Future addPasswordLocal(PasswordsModel password) async {
@@ -24,7 +25,7 @@ class DatabaseFunc {
     try {
       await FirebaseFirestore.instance
           .collection('user')
-          .doc('uk481281@gmail.com')
+          .doc(user.email)
           .collection('passwords')
           .add(password.converter())
           .then((value) => {
@@ -68,7 +69,7 @@ class DatabaseFunc {
       try {
         FirebaseFirestore.instance
             .collection('user')
-            .doc('uk481281@gmail.com')
+            .doc(user.email)
             .collection('passwords')
             .doc(passwordModel.firestoreDocID)
             .update(passwordModel.converter())
@@ -93,7 +94,7 @@ class DatabaseFunc {
       try {
         FirebaseFirestore.instance
             .collection('user')
-            .doc('uk481281@gmail.com')
+            .doc(user.email)
             .collection('passwords')
             .doc(passwordsModel.firestoreDocID)
             .delete();
@@ -106,17 +107,17 @@ class DatabaseFunc {
   }
 
   //Send Password to PC / Other Accesible Location
-  sendPassword(PasswordsModel passwordsModel) {
+  sendPassword(String firestoreDocId) {
     bool createNew = false;
     FirebaseFirestore.instance
         .collection('user')
-        .doc('uk481281@gmail.com')
+        .doc(user.email)
         .collection('copiedPassword')
         .get()
         .then((snapshot) {
       if (snapshot.size > 0) {
         for (DocumentSnapshot doc in snapshot.docs) {
-          if ('${passwordsModel.firestoreDocID}' != doc.get('ref')) {
+          if (firestoreDocId != doc.get('ref')) {
             doc.reference.delete();
             createNew = true;
           }
@@ -129,9 +130,9 @@ class DatabaseFunc {
                 {
                   FirebaseFirestore.instance
                       .collection('user')
-                      .doc('uk481281@gmail.com')
+                      .doc(user.email)
                       .collection('copiedPassword')
-                      .add({'ref': '${passwordsModel.firestoreDocID}'}),
+                      .add({'ref': firestoreDocId}),
                   createNew = false
                 }
             });

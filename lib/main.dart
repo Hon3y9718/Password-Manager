@@ -1,11 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:passmanager/Screens/Redirector.dart';
+import 'package:passmanager/Screens/SignIn.dart';
 import 'package:passmanager/Screens/bioLock.dart';
+import 'package:passmanager/api/googleSignInProvider.dart';
 import 'package:passmanager/api/localAuthAPI.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:passmanager/model/passwordModel.dart';
-import 'Screens/Home.dart';
+import 'package:provider/provider.dart';
 import 'colorPalletes/pallet.dart';
 
 void main() async {
@@ -27,13 +30,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Password Manager',
-      theme: ThemeData(
-          primarySwatch: Pallete.pallet1, accentColor: Pallete.pallet1),
-      home: BioLock(
-        authAPI: auth,
+    setErrorBuilder();
+    return ChangeNotifierProvider(
+      create: (context) => GoogleSignInProvider(),
+      child: MaterialApp(
+        title: 'Password Manager',
+        theme: ThemeData(
+            primarySwatch: Pallete.pallet1, accentColor: Pallete.pallet1),
+        // home: BioLock(
+        //   authAPI: auth,
+        // ),
+        home: Redirector(auth: auth),
+
+        // If any Error
       ),
     );
   }
+}
+
+void setErrorBuilder() {
+  ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+    return Scaffold(
+        body:
+            Center(child: Text("Unexpected error. See console for details.")));
+  };
 }

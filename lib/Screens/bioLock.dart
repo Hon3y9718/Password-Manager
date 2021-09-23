@@ -29,28 +29,6 @@ class _BioLockState extends State<BioLock> {
     popUpNoAuthSet(context);
   }
 
-  popUpSecutiryKeyNotMatch(context) {
-    Alert(
-        context: context,
-        content: Padding(
-          padding: const EdgeInsets.only(top: 30, bottom: 30),
-          child: Text('Security Key does not Match!'),
-        ),
-        style: AlertStyle(isCloseButton: false),
-        buttons: [
-          DialogButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Ok',
-                style: TextStyle(
-                    fontFamily: 'Glory',
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
-          ),
-        ]).show();
-  }
-
   popUpNoAuthSet(context) {
     Alert(
         context: context,
@@ -95,59 +73,21 @@ class _BioLockState extends State<BioLock> {
               fontWeight: FontWeight.bold),
         ),
       ),
-      body: Platform.isAndroid || Platform.isIOS || Platform.isFuchsia
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.fingerprint,
-                    size: 60,
-                    color: !isAuthenticated ? Colors.deepOrange : Colors.green,
-                  ),
-                  SizedBox(height: 30),
-                  Text('Click Fingerprint to Authenticate!')
-                ],
-              ),
-            )
-          : Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Enter Security Key",
-                    style: TextStyle(fontSize: 40, fontFamily: 'Glory'),
-                  ),
-                  SizedBox(
-                    height: 100,
-                  ),
-                  SizedBox(
-                      width: 400,
-                      child: TextField(
-                        controller: securtiyKey,
-                        decoration: InputDecoration(
-                            hintText: 'Type Something...',
-                            hintStyle: TextStyle(
-                                fontFamily: 'Glory',
-                                fontWeight: FontWeight.bold)),
-                      )),
-                ],
-              ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.fingerprint,
+              size: 60,
+              color: !isAuthenticated ? Colors.deepOrange : Colors.green,
             ),
-      floatingActionButton: !Platform.isAndroid || !Platform.isIOS
-          ? FloatingActionButton(
-              onPressed: () {
-                if (securtiyKey.text == key) {
-                  Navigator.pushReplacement(
-                      context, MaterialPageRoute(builder: (context) => Home()));
-                  return;
-                }
-                popUpSecutiryKeyNotMatch(context);
-              },
-              child: FaIcon(FontAwesomeIcons.arrowRight),
-            )
-          : Container(),
+            SizedBox(height: 30),
+            Text('Click Fingerprint to Authenticate!')
+          ],
+        ),
+      ),
     );
   }
 }
