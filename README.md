@@ -2,6 +2,8 @@
 
 Cool and Safe way to securely save your passwords.
 
+[Download Link](https://drive.google.com/file/d/19pXU8xCluAiWSCBtOaLkjbw_pPka5wiC/view?usp=sharing)
+
 ## Getting Started
 
 Password Manager App helps store and access your passwords easily everywhere you need them.
