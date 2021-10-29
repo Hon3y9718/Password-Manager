@@ -1,8 +1,7 @@
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:passmanager/Screens/Redirector.dart';
-import 'package:passmanager/Screens/SignIn.dart';
-import 'package:passmanager/Screens/bioLock.dart';
 import 'package:passmanager/api/googleSignInProvider.dart';
 import 'package:passmanager/api/localAuthAPI.dart';
 import 'package:hive/hive.dart';
@@ -18,40 +17,32 @@ void main() async {
   await Hive.openBox<PasswordsModel>('passwords');
   LocalAuthApi auth = LocalAuthApi();
   await Firebase.initializeApp();
-  runApp(MyApp(auth: auth));
+  runApp(EasyDynamicThemeWidget(
+    child: MyApp(
+      auth: auth,
+    ),
+  ));
 }
 
 class MyApp extends StatelessWidget {
   MyApp({
     this.auth,
   });
+
   final auth;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    setErrorBuilder();
     return ChangeNotifierProvider(
       create: (context) => GoogleSignInProvider(),
       child: MaterialApp(
         title: 'Password Manager',
+        themeMode: EasyDynamicTheme.of(context).themeMode,
+        darkTheme: ThemeData.dark(),
         theme: ThemeData(
             primarySwatch: Pallete.pallet1, accentColor: Pallete.pallet1),
-        // home: BioLock(
-        //   authAPI: auth,
-        // ),
         home: Redirector(auth: auth),
-
-        // If any Error
       ),
     );
   }
-}
-
-void setErrorBuilder() {
-  ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-    return Scaffold(
-        body:
-            Center(child: Text("Unexpected error. See console for details.")));
-  };
 }

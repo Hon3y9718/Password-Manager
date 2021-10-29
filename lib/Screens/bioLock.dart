@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:passmanager/Screens/Home.dart';
-import 'package:passmanager/api/localAuthAPI.dart';
+import 'package:passmanager/colorPalletes/pallet.dart';
+
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class BioLock extends StatefulWidget {
@@ -19,14 +19,13 @@ class _BioLockState extends State<BioLock> {
   TextEditingController securtiyKey = TextEditingController();
   var key = 'Yolo';
 
-  AuthenticateFingerprint() async {
+  authenticateFingerprint() async {
     isAuthenticated = await widget.authAPI.authenticate();
     if (isAuthenticated) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => Home(auth: widget.authAPI)));
       return;
     }
-    popUpNoAuthSet(context);
   }
 
   popUpNoAuthSet(context) {
@@ -40,7 +39,12 @@ class _BioLockState extends State<BioLock> {
         buttons: [
           DialogButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BioLock(
+                            authAPI: widget.authAPI,
+                          )));
             },
             child: Text('Ok',
                 style: TextStyle(
@@ -54,10 +58,16 @@ class _BioLockState extends State<BioLock> {
   @override
   void initState() {
     if (Platform.isAndroid || Platform.isIOS) {
-      AuthenticateFingerprint();
+      authenticateFingerprint();
     }
     super.initState();
   }
+
+  // @override
+  // void dispose() {
+  //   widget.authAPI.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +88,8 @@ class _BioLockState extends State<BioLock> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.fingerprint,
-              size: 60,
-              color: !isAuthenticated ? Colors.deepOrange : Colors.green,
-            ),
+            Icon(isAuthenticated ? Icons.check_circle : Icons.fingerprint,
+                size: 60, color: Pallete.pallet1),
             SizedBox(height: 30),
             Text('Click Fingerprint to Authenticate!')
           ],

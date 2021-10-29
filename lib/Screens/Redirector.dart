@@ -15,27 +15,11 @@ class Redirector extends StatefulWidget {
 }
 
 class _RedirectorState extends State<Redirector> {
-  final user = FirebaseAuth.instance.currentUser!;
+  var user = FirebaseAuth.instance.currentUser;
 
-  addUser() async {
-    await FirebaseFirestore.instance
-        .collection('user')
-        .doc(user.email)
-        .get()
-        .then((docRef) => {
-              if (!docRef.exists)
-                {
-                  FirebaseFirestore.instance
-                      .collection('user')
-                      .doc(user.email)
-                      .set({
-                    'Email': user.email,
-                    'Name': user.displayName,
-                    'ProfileImage': user.photoURL,
-                    'uid': user.uid
-                  })
-                }
-            });
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -49,7 +33,6 @@ class _RedirectorState extends State<Redirector> {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasData) {
-            addUser();
             return BioLock(
               authAPI: widget.auth,
             );

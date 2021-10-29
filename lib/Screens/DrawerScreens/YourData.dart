@@ -37,110 +37,110 @@ class _YourDataState extends State<YourData> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    height: 24,
-                  ),
-                  ListView(
-                    shrinkWrap: true,
-                    children: snapshot.data!.docs.map((doc) {
-                      return Card(
-                        child: ExpansionTile(
-                            subtitle: Text(doc['username'],
-                                overflow: TextOverflow.ellipsis),
-                            title: Row(
-                              children: [
-                                Text(doc['clientName'],
-                                    overflow: TextOverflow.ellipsis),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                FaIcon(
-                                  FontAwesomeIcons.solidCheckCircle,
-                                  color: Colors.blueGrey,
-                                  size: 15,
-                                )
-                              ],
-                            ),
-                            trailing: GestureDetector(
-                              onTap: () {
-                                Clipboard.setData(ClipboardData(
-                                        text: '${doc['username']}'))
-                                    .then((_) => ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text('Password Copied'),
-                                          duration: Duration(milliseconds: 500),
-                                        )));
-                              },
-                              onLongPress: () {
-                                Clipboard.setData(ClipboardData(
-                                        text:
-                                            '${doc['username']} : ${doc['password']}'))
-                                    .then((_) => ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text(
-                                              'Username and Password Copied'),
-                                          duration: Duration(milliseconds: 500),
-                                        )));
-                              },
-                              child: FaIcon(FontAwesomeIcons.copy),
-                            ),
-                            leading: FaIcon(
-                              FontAwesomeIcons.userAlt,
-                              color: Colors.blueGrey,
-                            ),
-                            children: [
-                              Row(
+                  Container(
+                    margin: EdgeInsets.only(top: 20),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: snapshot.data!.docs.map((doc) {
+                        return Card(
+                          child: ExpansionTile(
+                              subtitle: Text(doc['username'],
+                                  overflow: TextOverflow.ellipsis),
+                              title: Row(
                                 children: [
-                                  Expanded(
-                                    child: ListTile(
-                                      leading: FaIcon(
-                                        FontAwesomeIcons.userSecret,
-                                        size: 22,
-                                      ),
-                                      title: Text(
-                                        '${doc['username']}',
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      onTap: () {
-                                        Clipboard.setData(ClipboardData(
-                                                text: '${doc['username']}'))
-                                            .then((_) =>
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content:
-                                                      Text('Username Copied'),
-                                                  duration: Duration(
-                                                      milliseconds: 500),
-                                                )));
-                                      },
-                                    ),
+                                  Text(doc['clientName'],
+                                      overflow: TextOverflow.ellipsis),
+                                  SizedBox(
+                                    width: 5,
                                   ),
-                                  Expanded(
-                                    child: ListTile(
-                                      leading: FaIcon(
-                                        FontAwesomeIcons.lock,
-                                        size: 20,
-                                      ),
-                                      title: Text('${doc['password']}'),
-                                      onTap: () {
-                                        Clipboard.setData(ClipboardData(
-                                                text: '${doc['username']}'))
-                                            .then((_) =>
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  content:
-                                                      Text('Password Copied'),
-                                                  duration: Duration(
-                                                      milliseconds: 500),
-                                                )));
-                                      },
-                                    ),
-                                  ),
+                                  FaIcon(
+                                    FontAwesomeIcons.solidCheckCircle,
+                                    color: Colors.blueGrey,
+                                    size: 15,
+                                  )
                                 ],
                               ),
-                            ]),
-                      );
-                    }).toList(),
+                              trailing: GestureDetector(
+                                onTap: () {
+                                  Clipboard.setData(ClipboardData(
+                                          text: '${doc['username']}'))
+                                      .then((_) => ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text('Password Copied'),
+                                            duration: Duration(milliseconds: 500),
+                                          )));
+                                },
+                                onLongPress: () {
+                                  Clipboard.setData(ClipboardData(
+                                          text:
+                                              '${doc['username']} : ${doc['password']}'))
+                                      .then((_) => ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                                'Username and Password Copied'),
+                                            duration: Duration(milliseconds: 500),
+                                          )));
+                                },
+                                child: FaIcon(FontAwesomeIcons.copy),
+                              ),
+                              leading: FaIcon(
+                                FontAwesomeIcons.userAlt,
+                                color: Colors.blueGrey,
+                              ),
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ListTile(
+                                        leading: FaIcon(
+                                          FontAwesomeIcons.userSecret,
+                                          size: 22,
+                                        ),
+                                        title: Text(
+                                          '${doc['username']}',
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        onTap: () {
+                                          Clipboard.setData(ClipboardData(
+                                                  text: '${doc['username']}'))
+                                              .then((_) =>
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(SnackBar(
+                                                    content:
+                                                        Text('Username Copied'),
+                                                    duration: Duration(
+                                                        milliseconds: 500),
+                                                  )));
+                                        },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListTile(
+                                        leading: FaIcon(
+                                          FontAwesomeIcons.lock,
+                                          size: 20,
+                                        ),
+                                        title: Text('${doc['password']}'),
+                                        onTap: () {
+                                          Clipboard.setData(ClipboardData(
+                                                  text: '${doc['username']}'))
+                                              .then((_) =>
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(SnackBar(
+                                                    content:
+                                                        Text('Password Copied'),
+                                                    duration: Duration(
+                                                        milliseconds: 500),
+                                                  )));
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ]),
+                        );
+                      }).toList(),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),

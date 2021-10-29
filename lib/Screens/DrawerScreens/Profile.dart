@@ -2,9 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:passmanager/Screens/DrawerScreens/YourData.dart';
+import 'package:passmanager/Screens/Redirector.dart';
+import 'package:passmanager/Screens/SignIn.dart';
+import 'package:passmanager/api/DatabaseFunc.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({Key? key, required this.auth}) : super(key: key);
+  final auth;
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -12,18 +17,56 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final user = FirebaseAuth.instance.currentUser!;
+  Account account = Account();
+  popUpNoAuthSet(context) {
+    Alert(
+        context: context,
+        content: Padding(
+          padding: const EdgeInsets.only(top: 30, bottom: 30),
+          child: Text('Are you sure?'),
+        ),
+        style: AlertStyle(isCloseButton: false),
+        buttons: [
+          DialogButton(
+            color: Colors.red,
+            onPressed: () {
+              account.LogOut()();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Redirector(auth: widget.auth)));
+            },
+            child: Text('Yes',
+                style: TextStyle(
+                    fontFamily: 'Glory',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+          ),
+          DialogButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('No',
+                style: TextStyle(
+                    fontFamily: 'Glory',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
+          ),
+        ]).show();
+  }
 
   @override
   Widget build(BuildContext context) {
+    DatabaseFunc db = DatabaseFunc();
+    Sync sync = Sync();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: FaIcon(
-            FontAwesomeIcons.arrowLeft,
-            size: 18,
-            color: Colors.black,
+            FontAwesomeIcons.angleLeft,
+            size: 25,
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -45,7 +88,10 @@ class _ProfileState extends State<Profile> {
             ),
             Text(
               '${user.displayName}',
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(context).accentColor),
             ),
             SizedBox(
               height: 8,
@@ -70,8 +116,8 @@ class _ProfileState extends State<Profile> {
                   ),
                   leading: Icon(Icons.signal_wifi_off_outlined),
                   trailing: FaIcon(
-                    FontAwesomeIcons.arrowRight,
-                    size: 18,
+                    FontAwesomeIcons.angleRight,
+                    size: 22,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -84,8 +130,8 @@ class _ProfileState extends State<Profile> {
                   ),
                   leading: Icon(Icons.wifi),
                   trailing: FaIcon(
-                    FontAwesomeIcons.arrowRight,
-                    size: 18,
+                    FontAwesomeIcons.angleRight,
+                    size: 22,
                   ),
                   onTap: () {
                     Navigator.push(context,
@@ -94,14 +140,30 @@ class _ProfileState extends State<Profile> {
                 ),
                 ListTile(
                   title: Text(
-                    'About',
+                    'Sync',
                     style: TextStyle(fontSize: 20),
                   ),
-                  leading: FaIcon(FontAwesomeIcons.solidAddressCard),
+                  leading: FaIcon(FontAwesomeIcons.syncAlt),
+                  onTap: () async {
+                    await db.backupAllPasswords();
+                    await sync.syncFromFirestore();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Sync Complete!')),
+                    );
+                  },
                 ),
                 ListTile(
+                  onTap: () {
+                    showLicensePage(
+                      context: context,
+                      applicationName: 'Password Manager',
+                      applicationVersion: 'v1.0.1',
+                      applicationLegalese:
+                          'Copyright © 2021 Techicious - All Rights Reserved',
+                    );
+                  },
                   title: Text(
-                    'Legal',
+                    'Licenses',
                     style: TextStyle(fontSize: 20),
                   ),
                   leading: Icon(
@@ -113,11 +175,16 @@ class _ProfileState extends State<Profile> {
                   color: Colors.grey,
                 ),
                 ListTile(
+                  onTap: () {
+                    popUpNoAuthSet(context);
+                  },
                   title: Text(
-                    'Delete My Account',
-                    style: TextStyle(fontSize: 20, color: Colors.red),
+                    'Log Out',
+                    style: TextStyle(
+                        fontSize: 20, color: Theme.of(context).accentColor),
                   ),
-                  leading: Icon(Icons.assignment, size: 25, color: Colors.red),
+                  leading: Icon(Icons.logout,
+                      size: 25, color: Theme.of(context).accentColor),
                 ),
               ],
             )

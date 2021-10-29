@@ -22,8 +22,11 @@ class PasswordsModel extends HiveObject {
   @HiveField(5)
   late String firestoreDocID;
 
+  @HiveField(6)
+  late String ID;
+
   PasswordsModel(this.ClientName, this.Password, this.UserName,
-      this.createdDate, this.isUpdated, this.firestoreDocID);
+      this.createdDate, this.isUpdated, this.firestoreDocID, this.ID);
 
   converter() {
     return {
@@ -31,6 +34,7 @@ class PasswordsModel extends HiveObject {
       'password': this.Password,
       'username': this.UserName,
       'createdDate': this.createdDate,
+      'ID': this.ID
     };
   }
 }

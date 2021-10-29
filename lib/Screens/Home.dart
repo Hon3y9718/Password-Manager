@@ -1,3 +1,4 @@
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,17 +6,19 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:passmanager/Screens/DrawerScreens/Connect.dart';
 import 'package:passmanager/Screens/DrawerScreens/Profile.dart';
-import 'package:passmanager/Screens/DrawerScreens/Setting.dart';
 import 'package:passmanager/Screens/DrawerScreens/YourData.dart';
 import 'package:passmanager/api/DatabaseFunc.dart';
+import 'package:passmanager/api/uniqueIDGenrator.dart';
 import 'package:passmanager/boxes.dart';
 import 'package:passmanager/colorPalletes/pallet.dart';
 import 'package:passmanager/model/passwordModel.dart';
 import 'package:passmanager/widgets/widgets.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({Key? key, required this.auth}) : super(key: key);
+  final auth;
   @override
   _HomeState createState() => _HomeState();
 }
@@ -27,8 +30,82 @@ class _HomeState extends State<Home> {
   TextEditingController clientName = TextEditingController();
 
   DatabaseFunc db = DatabaseFunc();
+  Sync sync = Sync();
 
   final user = FirebaseAuth.instance.currentUser!;
+
+  var isBackUpOn = true;
+  var isDarkOn = true;
+  var backupTitle = 'Backup Off';
+  var backupTileColor = Colors.red;
+
+  setSharedPreferenceBool(String key, bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
+  }
+
+  getSharedPreferenceBool(key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(key);
+  }
+
+  toggleBackup(bool value) async {
+    if (isBackUpOn) {
+      setSharedPreferenceBool('isBackUpOn', false);
+      setState(() {
+        isBackUpOn = false;
+        backupTitle = 'Backup Off';
+      });
+    } else {
+      setSharedPreferenceBool('isBackUpOn', true);
+      setState(() {
+        isBackUpOn = true;
+        backupTitle = 'Backup On';
+      });
+    }
+  }
+
+  toggleTheme(bool value) async {
+    if (isDarkOn) {
+      await setSharedPreferenceBool('isDarkOn', false);
+      setState(() {
+        isDarkOn = false;
+        EasyDynamicTheme.of(context).changeTheme(dark: isDarkOn);
+      });
+    } else {
+      await setSharedPreferenceBool('isDarkOn', true);
+      setState(() {
+        isDarkOn = true;
+        EasyDynamicTheme.of(context).changeTheme(dark: isDarkOn);
+      });
+    }
+  }
+
+  setVariablesAsSharedPreferences() async {
+    var testDarkMode;
+    var testBackupMode;
+    try {
+      testDarkMode = await getSharedPreferenceBool('isDarkOn');
+      testBackupMode = await getSharedPreferenceBool('isBackUpOn');
+      if (testDarkMode != null) {
+        isDarkOn = testDarkMode;
+        EasyDynamicTheme.of(context).changeTheme(dark: isDarkOn);
+      } else {
+        EasyDynamicTheme.of(context).changeTheme(dark: isDarkOn);
+      }
+      if (testBackupMode != null) {
+        isBackUpOn = testBackupMode;
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    setVariablesAsSharedPreferences();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -43,7 +120,6 @@ class _HomeState extends State<Home> {
     return Scaffold(
       key: scaffoldKey,
       //backgroundColor: Color(0xffebf7ba),
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Password Manager',
@@ -81,7 +157,6 @@ class _HomeState extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //Cloud
             Column(
               children: [
                 SizedBox(
@@ -104,6 +179,7 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
+                //Cloud
                 ListTile(
                   title: Text(
                     'Your Data',
@@ -132,25 +208,12 @@ class _HomeState extends State<Home> {
                   ),
                   onTap: () {
                     Navigator.pop(context);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Profile()));
-                  },
-                ),
-
-                //Settings
-                ListTile(
-                  title: Text(
-                    'Settings',
-                    style: TextStyle(),
-                  ),
-                  leading: FaIcon(
-                    FontAwesomeIcons.cog,
-                    size: 22,
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Settings()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Profile(
+                                  auth: widget.auth,
+                                )));
                   },
                 ),
 
@@ -175,11 +238,46 @@ class _HomeState extends State<Home> {
             ),
 
             //Company Name
-            Center(
-                child: Container(
-              child: Text('Made with ❤ by Techicious'),
-              margin: EdgeInsets.symmetric(vertical: 10),
-            ))
+            Column(
+              children: [
+                ListTile(
+                  onTap: () {
+                    isDarkOn ? toggleTheme(false) : toggleTheme(true);
+                  },
+                  title: Text(
+                    'Dark Mode',
+                  ),
+                  leading: FaIcon(
+                    FontAwesomeIcons.moon,
+                    size: 22,
+                  ),
+                  trailing: Switch(
+                    onChanged: toggleTheme,
+                    value: isDarkOn,
+                  ),
+                ),
+                ListTile(
+                  tileColor: isBackUpOn ? Colors.greenAccent : Colors.red,
+                  onTap: () {
+                    isBackUpOn ? toggleBackup(false) : toggleBackup(true);
+                  },
+                  title: Text(
+                    backupTitle,
+                  ),
+                  leading: FaIcon(
+                    FontAwesomeIcons.blog,
+                    size: 22,
+                  ),
+                  trailing: Switch(
+                    onChanged: toggleBackup,
+                    value: isBackUpOn,
+                    activeColor: Theme.of(context).primaryColor,
+                    inactiveThumbColor: Theme.of(context).accentColor,
+                    inactiveTrackColor: Colors.black26,
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -292,9 +390,23 @@ class _HomeState extends State<Home> {
             ),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                PasswordsModel passwordModel = await db.addPasswordRemote(
-                    userName.text, password.text, clientName.text);
-                await db.addPasswordLocal(passwordModel);
+                if (isBackUpOn) {
+                  PasswordsModel passwordModel = await db.addPasswordRemote(
+                      userName.text, password.text, clientName.text);
+                  await db.addPasswordLocal(passwordModel);
+                } else {
+                  var idGenerator = GenerateUUID();
+                  var id = idGenerator.generateUniqueID();
+                  PasswordsModel passwordsModel = PasswordsModel(
+                      clientName.text,
+                      password.text,
+                      userName.text,
+                      DateTime.now(),
+                      false,
+                      'null',
+                      id);
+                  await db.addPasswordLocal(passwordsModel);
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Password Added')),
                 );

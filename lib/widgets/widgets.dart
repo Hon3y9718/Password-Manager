@@ -119,10 +119,16 @@ Widget buildPasswordTile(
                 Expanded(
                   child: IconButton(
                     onPressed: () {
-                      db.sendPassword(passwordsModel.firestoreDocID);
+                      var isSent = db.sendPassword(passwordsModel);
+
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Password sent to your PC'),
-                        duration: Duration(milliseconds: 500),
+                        content: isSent
+                            ? Text('Password sent to your PC')
+                            : Text(
+                                'This Password is Not on Cloud.\nBackup this Password to Share it with your PC'),
+                        duration: isSent
+                            ? Duration(milliseconds: 500)
+                            : Duration(seconds: 2),
                       ));
                     },
                     icon: FaIcon(FontAwesomeIcons.externalLinkAlt),
@@ -133,6 +139,7 @@ Widget buildPasswordTile(
                     child: IconButton(
                   onPressed: () {
                     db.deletePasswordLocal(passwordsModel);
+                    db.deletePasswordRemote(passwordsModel);
                   },
                   icon: FaIcon(FontAwesomeIcons.trash),
                   color: Colors.grey,
