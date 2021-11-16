@@ -28,7 +28,7 @@ class _RedirectorState extends State<Redirector> {
       body: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.done) {
             return Center(
               child: CircularProgressIndicator(),
             );

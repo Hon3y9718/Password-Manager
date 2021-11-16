@@ -30,11 +30,11 @@ class _ProfileState extends State<Profile> {
           DialogButton(
             color: Colors.red,
             onPressed: () {
-              account.LogOut()();
+              account.LogOut();
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Redirector(auth: widget.auth)));
+                      builder: (context) => SignIn(auth: widget.auth)));
             },
             child: Text('Yes',
                 style: TextStyle(
