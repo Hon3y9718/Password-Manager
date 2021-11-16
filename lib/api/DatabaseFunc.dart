@@ -112,6 +112,7 @@ class DatabaseFunc {
   //Send Password to PC / Other Accesible Location
   sendPassword(PasswordsModel passwordsModel) {
     bool createNew = false; //To create New Doc in Copied Password Branch
+    var uniqueId = passwordsModel.ID;
     if (passwordsModel.isUpdated) {
       FirebaseFirestore.instance
           .collection('user')
@@ -121,7 +122,7 @@ class DatabaseFunc {
           .then((snapshot) {
         if (snapshot.size > 0) {
           for (DocumentSnapshot doc in snapshot.docs) {
-            if (firestoreDocId != doc.get('ref')) {
+            if (uniqueId != doc.get('ref')) {
               doc.reference.delete();
               createNew = true;
             }
@@ -136,8 +137,9 @@ class DatabaseFunc {
                         .collection('user')
                         .doc(user.email)
                         .collection('copiedPassword')
-                        .add({'ref': firestoreDocId}),
-                    createNew = false
+                        .add({'ref': uniqueId}),
+                    createNew = false,
+                    print(uniqueId)
                   }
               });
       return true;

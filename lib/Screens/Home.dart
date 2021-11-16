@@ -172,7 +172,7 @@ class _HomeState extends State<Home> {
                           width: double.infinity,
                           child: Text(
                             'Hi,\n${user.displayName}',
-                            style: TextStyle(color: Colors.white, fontSize: 30),
+                            style: TextStyle(color: Colors.white, fontSize: 30, fontFamily: 'Glory', fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -182,8 +182,7 @@ class _HomeState extends State<Home> {
                 //Cloud
                 ListTile(
                   title: Text(
-                    'Your Data',
-                    style: TextStyle(),
+                    'Your Data', style: TextStyle(fontWeight: FontWeight.bold)
                   ),
                   leading: FaIcon(
                     FontAwesomeIcons.cloud,
@@ -200,7 +199,7 @@ class _HomeState extends State<Home> {
                 ListTile(
                   title: Text(
                     'Profile',
-                    style: TextStyle(),
+
                   ),
                   leading: FaIcon(
                     FontAwesomeIcons.userAlt,
@@ -222,8 +221,9 @@ class _HomeState extends State<Home> {
                 ListTile(
                   title: Text(
                     'Connect',
+
                   ),
-                  subtitle: Text('Connect with PC'),
+                  subtitle: Text('Connect with PC', ),
                   leading: FaIcon(
                     FontAwesomeIcons.plug,
                     size: 22,
@@ -246,6 +246,7 @@ class _HomeState extends State<Home> {
                   },
                   title: Text(
                     'Dark Mode',
+
                   ),
                   leading: FaIcon(
                     FontAwesomeIcons.moon,
@@ -263,6 +264,7 @@ class _HomeState extends State<Home> {
                   },
                   title: Text(
                     backupTitle,
+
                   ),
                   leading: FaIcon(
                     FontAwesomeIcons.blog,
@@ -386,7 +388,7 @@ class _HomeState extends State<Home> {
             color: Colors.green,
             child: Text(
               'Add Password',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontFamily: 'Glory'),
             ),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
@@ -408,7 +410,7 @@ class _HomeState extends State<Home> {
                   await db.addPasswordLocal(passwordsModel);
                 }
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Password Added')),
+                  SnackBar(content: Text('Password Added', style: TextStyle(fontFamily: 'Glory'))),
                 );
               }
               password.text = '';

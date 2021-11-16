@@ -14,10 +14,10 @@ Widget buildPasswordTile(
   return Card(
     child: ExpansionTile(
         subtitle:
-            Text(passwordsModel.UserName, overflow: TextOverflow.ellipsis),
+            Text(passwordsModel.UserName, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: 'Glory'),),
         title: Row(
           children: [
-            Text(passwordsModel.ClientName, overflow: TextOverflow.ellipsis),
+            Text(passwordsModel.ClientName, overflow: TextOverflow.ellipsis, style: TextStyle(fontFamily: 'Glory', fontWeight: FontWeight.w500)),
             SizedBox(
               width: 5,
             ),
@@ -35,7 +35,7 @@ Widget buildPasswordTile(
             Clipboard.setData(ClipboardData(text: '${passwordsModel.UserName}'))
                 .then(
                     (_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Password Copied'),
+                          content: Text('Password Copied', style: TextStyle(fontFamily: 'Glory')),
                           duration: Duration(milliseconds: 500),
                         )));
           },
@@ -45,7 +45,7 @@ Widget buildPasswordTile(
                         '${passwordsModel.UserName} : ${passwordsModel.Password}'))
                 .then(
                     (_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Username and Password Copied'),
+                          content: Text('Username and Password Copied', style: TextStyle(fontFamily: 'Glory')),
                           duration: Duration(milliseconds: 500),
                         )));
           },
@@ -67,13 +67,14 @@ Widget buildPasswordTile(
                   title: Text(
                     '${passwordsModel.UserName}',
                     overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontFamily: 'Glory')
                   ),
                   onTap: () {
                     Clipboard.setData(
                             ClipboardData(text: '${passwordsModel.UserName}'))
                         .then((_) =>
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Username Copied'),
+                              content: Text('Username Copied', style: TextStyle(fontFamily: 'Glory')),
                               duration: Duration(milliseconds: 500),
                             )));
                   },
@@ -85,13 +86,13 @@ Widget buildPasswordTile(
                     FontAwesomeIcons.lock,
                     size: 20,
                   ),
-                  title: Text('${passwordsModel.Password}'),
+                  title: Text('${passwordsModel.Password}', style: TextStyle(fontFamily: 'Glory')),
                   onTap: () {
                     Clipboard.setData(
                             ClipboardData(text: '${passwordsModel.UserName}'))
                         .then((_) =>
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Password Copied'),
+                              content: Text('Password Copied', style: TextStyle(fontFamily: 'Glory')),
                               duration: Duration(milliseconds: 500),
                             )));
                   },
@@ -123,9 +124,9 @@ Widget buildPasswordTile(
 
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: isSent
-                            ? Text('Password sent to your PC')
+                            ? Text('Password sent to your PC', style: TextStyle(fontFamily: 'Glory'))
                             : Text(
-                                'This Password is Not on Cloud.\nBackup this Password to Share it with your PC'),
+                                'This Password is Not on Cloud.\nBackup this Password to Share it with your PC', style: TextStyle(fontFamily: 'Glory')),
                         duration: isSent
                             ? Duration(milliseconds: 500)
                             : Duration(seconds: 2),

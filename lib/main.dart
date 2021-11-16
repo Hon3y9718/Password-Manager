@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
       create: (context) => GoogleSignInProvider(),
       child: MaterialApp(
         title: 'Password Manager',
+        debugShowCheckedModeBanner: false,
         themeMode: EasyDynamicTheme.of(context).themeMode,
         darkTheme: ThemeData.dark(),
         theme: ThemeData(
